@@ -18,7 +18,6 @@ package standalone
 
 import (
 	"context"
-	"crypto/tls"
 	"fmt"
 	"net"
 	"os"
@@ -257,16 +256,6 @@ func (s *Server) initServices() error {
 func (s *Server) Start(ctx context.Context) error {
 	s.logger.Info("Starting standalone server")
 
-	// Determine HTTP/2 settings
-	tlsOpts := []func(*tls.Config){}
-	if !s.config.EnableHTTP2 {
-		disableHTTP2 := func(c *tls.Config) {
-			s.logger.Info("disabling http/2")
-			c.NextProtos = []string{"http/1.1"}
-		}
-		tlsOpts = append(tlsOpts, disableHTTP2)
-	}
-
 	// Start controller service
 	s.wg.Add(1)
 	go func() {
@@ -367,7 +356,8 @@ func (s *Server) startOIDCService() error {
 	// TODO: Implement OIDC service startup for standalone mode
 	s.logger.Info("OIDC service started")
 	<-s.ctx.Done()
-	return nil
+	s.logger.Info("OIDC service stopped")
+	return s.ctx.Err()
 }
 
 // startDashboardService starts the dashboard service
@@ -375,5 +365,6 @@ func (s *Server) startDashboardService() error {
 	// TODO: Implement dashboard service startup for standalone mode
 	s.logger.Info("Dashboard service started")
 	<-s.ctx.Done()
-	return nil
+	s.logger.Info("Dashboard service stopped")
+	return s.ctx.Err()
 }
