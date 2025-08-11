@@ -47,18 +47,18 @@ type Config struct {
 
 // Server represents a standalone jumpstarter server
 type Server struct {
-	config         Config
-	logger         logr.Logger
-	store          *Store
-	controllerSvc  *service.ControllerService
-	routerSvc      *service.RouterService
-	oidcSvc        *service.OIDCService
-	dashboardSvc   *service.DashboardService
-	
+	config        Config
+	logger        logr.Logger
+	store         *Store
+	controllerSvc *service.ControllerService
+	routerSvc     *service.RouterService
+	oidcSvc       *service.OIDCService
+	dashboardSvc  *service.DashboardService
+
 	// Server components
 	controllerServer *grpc.Server
 	routerServer     *grpc.Server
-	
+
 	// Shutdown
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -67,9 +67,9 @@ type Server struct {
 
 // StandaloneConfig represents the configuration file structure for standalone mode
 type StandaloneConfig struct {
-	Authentication AuthConfig     `yaml:"authentication"`
-	Router         config.Router  `yaml:"router"`
-	GRPC           GRPCConfig     `yaml:"grpc"`
+	Authentication AuthConfig    `yaml:"authentication"`
+	Router         config.Router `yaml:"router"`
+	GRPC           GRPCConfig    `yaml:"grpc"`
 }
 
 type AuthConfig struct {
@@ -92,9 +92,9 @@ type KeepaliveConfig struct {
 // NewServer creates a new standalone server
 func NewServer(ctx context.Context, config Config) (*Server, error) {
 	logger := logr.FromContextOrDiscard(ctx).WithName("standalone-server")
-	
+
 	ctx, cancel := context.WithCancel(ctx)
-	
+
 	server := &Server{
 		config: config,
 		logger: logger,
@@ -102,17 +102,17 @@ func NewServer(ctx context.Context, config Config) (*Server, error) {
 		cancel: cancel,
 		store:  NewStore(),
 	}
-	
+
 	if err := server.loadConfig(); err != nil {
 		cancel()
 		return nil, fmt.Errorf("failed to load config: %w", err)
 	}
-	
+
 	if err := server.initServices(); err != nil {
 		cancel()
 		return nil, fmt.Errorf("failed to initialize services: %w", err)
 	}
-	
+
 	return server, nil
 }
 
@@ -123,17 +123,17 @@ func (s *Server) loadConfig() error {
 		s.logger.Info("Config file not found, creating default", "path", s.config.ConfigFile)
 		return s.createDefaultConfig()
 	}
-	
+
 	data, err := os.ReadFile(s.config.ConfigFile)
 	if err != nil {
 		return fmt.Errorf("failed to read config file: %w", err)
 	}
-	
+
 	var config StandaloneConfig
 	if err := yaml.Unmarshal(data, &config); err != nil {
 		return fmt.Errorf("failed to parse config: %w", err)
 	}
-	
+
 	s.logger.Info("Loaded configuration", "path", s.config.ConfigFile)
 	return nil
 }
@@ -159,21 +159,21 @@ func (s *Server) createDefaultConfig() error {
 			},
 		},
 	}
-	
+
 	// Create directory if it doesn't exist
 	if err := os.MkdirAll(filepath.Dir(s.config.ConfigFile), 0755); err != nil {
 		return fmt.Errorf("failed to create config directory: %w", err)
 	}
-	
+
 	data, err := yaml.Marshal(defaultConfig)
 	if err != nil {
 		return fmt.Errorf("failed to marshal default config: %w", err)
 	}
-	
+
 	if err := os.WriteFile(s.config.ConfigFile, data, 0644); err != nil {
 		return fmt.Errorf("failed to write default config: %w", err)
 	}
-	
+
 	s.logger.Info("Created default configuration", "path", s.config.ConfigFile)
 	return nil
 }
@@ -185,13 +185,13 @@ func (s *Server) initServices() error {
 	if err != nil {
 		return fmt.Errorf("failed to generate OIDC certificate: %w", err)
 	}
-	
+
 	// Create OIDC signer
 	controllerKey := os.Getenv("CONTROLLER_KEY")
 	if controllerKey == "" {
 		controllerKey = "default-key-for-standalone-mode"
 	}
-	
+
 	oidcSigner, err := oidc.NewSignerFromSeed(
 		[]byte(controllerKey),
 		"https://localhost:8085",
@@ -200,10 +200,10 @@ func (s *Server) initServices() error {
 	if err != nil {
 		return fmt.Errorf("failed to create OIDC signer: %w", err)
 	}
-	
+
 	// Initialize services with simplified configuration
 	authenticator := &SimpleAuthenticator{prefix: "jumpstarter"}
-	
+
 	// Create simple router
 	router := config.Router{
 		"default": config.RouterEntry{
@@ -211,13 +211,13 @@ func (s *Server) initServices() error {
 			Labels:   map[string]string{},
 		},
 	}
-	
+
 	// GRPC server options
 	serverOptions := grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
 		MinTime:             1 * time.Second,
 		PermitWithoutStream: true,
 	})
-	
+
 	// Initialize controller service
 	s.controllerSvc = &service.ControllerService{
 		Client: s.store,
@@ -232,31 +232,31 @@ func (s *Server) initServices() error {
 		Router:       router,
 		ServerOption: serverOptions,
 	}
-	
+
 	// Initialize router service
 	s.routerSvc = &service.RouterService{
 		ServerOption: serverOptions,
 	}
-	
+
 	// Initialize OIDC service
 	s.oidcSvc = &service.OIDCService{
 		Signer: oidcSigner,
 		Cert:   oidcCert,
 	}
-	
+
 	// Initialize dashboard service
 	s.dashboardSvc = &service.DashboardService{
 		Client: s.store,
 		Scheme: nil, // Not needed in standalone mode
 	}
-	
+
 	return nil
 }
 
 // Start starts the standalone server
 func (s *Server) Start(ctx context.Context) error {
 	s.logger.Info("Starting standalone server")
-	
+
 	// Determine HTTP/2 settings
 	tlsOpts := []func(*tls.Config){}
 	if !s.config.EnableHTTP2 {
@@ -266,7 +266,7 @@ func (s *Server) Start(ctx context.Context) error {
 		}
 		tlsOpts = append(tlsOpts, disableHTTP2)
 	}
-	
+
 	// Start controller service
 	s.wg.Add(1)
 	go func() {
@@ -275,7 +275,7 @@ func (s *Server) Start(ctx context.Context) error {
 			s.logger.Error(err, "Controller service failed")
 		}
 	}()
-	
+
 	// Start router service
 	s.wg.Add(1)
 	go func() {
@@ -284,7 +284,7 @@ func (s *Server) Start(ctx context.Context) error {
 			s.logger.Error(err, "Router service failed")
 		}
 	}()
-	
+
 	// Start OIDC service
 	s.wg.Add(1)
 	go func() {
@@ -293,7 +293,7 @@ func (s *Server) Start(ctx context.Context) error {
 			s.logger.Error(err, "OIDC service failed")
 		}
 	}()
-	
+
 	// Start dashboard service
 	s.wg.Add(1)
 	go func() {
@@ -302,20 +302,20 @@ func (s *Server) Start(ctx context.Context) error {
 			s.logger.Error(err, "Dashboard service failed")
 		}
 	}()
-	
+
 	s.logger.Info("Standalone server started successfully",
 		"controller", s.config.ControllerAddr,
 		"router", s.config.RouterAddr)
-	
+
 	return nil
 }
 
 // Stop stops the standalone server
 func (s *Server) Stop(ctx context.Context) error {
 	s.logger.Info("Stopping standalone server")
-	
+
 	s.cancel()
-	
+
 	// Stop GRPC servers
 	if s.controllerServer != nil {
 		s.controllerServer.GracefulStop()
@@ -323,10 +323,10 @@ func (s *Server) Stop(ctx context.Context) error {
 	if s.routerServer != nil {
 		s.routerServer.GracefulStop()
 	}
-	
+
 	// Wait for all goroutines to finish
 	s.wg.Wait()
-	
+
 	s.logger.Info("Standalone server stopped")
 	return nil
 }
@@ -337,12 +337,12 @@ func (s *Server) startControllerService() error {
 	if err != nil {
 		return fmt.Errorf("failed to listen on controller address %s: %w", s.config.ControllerAddr, err)
 	}
-	
+
 	s.controllerServer = grpc.NewServer(s.controllerSvc.ServerOption)
-	
+
 	// TODO: Register the actual controller service here
 	// For now, we'll implement the basic structure
-	
+
 	s.logger.Info("Controller service listening", "addr", s.config.ControllerAddr)
 	return s.controllerServer.Serve(lis)
 }
@@ -353,11 +353,11 @@ func (s *Server) startRouterService() error {
 	if err != nil {
 		return fmt.Errorf("failed to listen on router address %s: %w", s.config.RouterAddr, err)
 	}
-	
+
 	s.routerServer = grpc.NewServer(s.routerSvc.ServerOption)
-	
+
 	// TODO: Register the actual router service here
-	
+
 	s.logger.Info("Router service listening", "addr", s.config.RouterAddr)
 	return s.routerServer.Serve(lis)
 }

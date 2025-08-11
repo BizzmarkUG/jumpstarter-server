@@ -1,0 +1,24 @@
+# Jumpstarter Standalone Configuration
+# This file configures jumpstarter when running in standalone mode (without Kubernetes)
+
+authentication:
+  internal:
+    prefix: "jumpstarter"
+
+# Router configuration - defines available router endpoints
+router:
+  default:
+    endpoint: "localhost:8090"
+    labels: {}
+  
+  # Example of additional router endpoints
+  # production:
+  #   endpoint: "prod-router:8090"
+  #   labels:
+  #     environment: "production"
+
+# gRPC server configuration
+grpc:
+  keepalive:
+    minTime: "1s"
+    permitWithoutStream: true

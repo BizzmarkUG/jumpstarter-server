@@ -51,11 +51,11 @@ func (s *Store) objectKey(obj runtime.Object) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	gvk := obj.GetObjectKind().GroupVersionKind()
 	namespace := accessor.GetNamespace()
 	name := accessor.GetName()
-	
+
 	if namespace != "" {
 		return fmt.Sprintf("%s/%s/%s/%s", gvk.Group, gvk.Kind, namespace, name), nil
 	}
@@ -66,7 +66,7 @@ func (s *Store) objectKey(obj runtime.Object) (string, error) {
 func (s *Store) Get(ctx context.Context, key client.ObjectKey, obj client.Object, opts ...client.GetOption) error {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	
+
 	gvk := obj.GetObjectKind().GroupVersionKind()
 	var keyStr string
 	if key.Namespace != "" {
@@ -74,12 +74,12 @@ func (s *Store) Get(ctx context.Context, key client.ObjectKey, obj client.Object
 	} else {
 		keyStr = fmt.Sprintf("%s/%s/%s", gvk.Group, gvk.Kind, key.Name)
 	}
-	
+
 	stored, exists := s.objects[keyStr]
 	if !exists {
 		return fmt.Errorf("object not found: %s", keyStr)
 	}
-	
+
 	// Copy the stored object to the output object
 	storedValue := reflect.ValueOf(stored)
 	objValue := reflect.ValueOf(obj)
@@ -95,14 +95,14 @@ func (s *Store) Get(ctx context.Context, key client.ObjectKey, obj client.Object
 func (s *Store) List(ctx context.Context, list client.ObjectList, opts ...client.ListOption) error {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
-	
+
 	// This is a simplified implementation
 	// In a real implementation, you'd filter by namespace, labels, etc.
 	listOpts := &client.ListOptions{}
 	for _, opt := range opts {
 		opt.ApplyToList(listOpts)
 	}
-	
+
 	// For now, return an empty list
 	return nil
 }
@@ -111,32 +111,32 @@ func (s *Store) List(ctx context.Context, list client.ObjectList, opts ...client
 func (s *Store) Create(ctx context.Context, obj client.Object, opts ...client.CreateOption) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	accessor, err := meta.Accessor(obj)
 	if err != nil {
 		return err
 	}
-	
+
 	// Set creation timestamp if not set
 	creationTime := accessor.GetCreationTimestamp()
 	if creationTime.IsZero() {
 		accessor.SetCreationTimestamp(metav1.NewTime(time.Now()))
 	}
-	
+
 	// Generate UID if not set
 	if accessor.GetUID() == "" {
 		accessor.SetUID(types.UID(fmt.Sprintf("uid-%d", time.Now().UnixNano())))
 	}
-	
+
 	key, err := s.objectKey(obj)
 	if err != nil {
 		return err
 	}
-	
+
 	if _, exists := s.objects[key]; exists {
 		return fmt.Errorf("object already exists: %s", key)
 	}
-	
+
 	s.objects[key] = obj.DeepCopyObject()
 	return nil
 }
@@ -145,16 +145,16 @@ func (s *Store) Create(ctx context.Context, obj client.Object, opts ...client.Cr
 func (s *Store) Delete(ctx context.Context, obj client.Object, opts ...client.DeleteOption) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	key, err := s.objectKey(obj)
 	if err != nil {
 		return err
 	}
-	
+
 	if _, exists := s.objects[key]; !exists {
 		return fmt.Errorf("object not found: %s", key)
 	}
-	
+
 	delete(s.objects, key)
 	return nil
 }
@@ -163,16 +163,16 @@ func (s *Store) Delete(ctx context.Context, obj client.Object, opts ...client.De
 func (s *Store) Update(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	key, err := s.objectKey(obj)
 	if err != nil {
 		return err
 	}
-	
+
 	if _, exists := s.objects[key]; !exists {
 		return fmt.Errorf("object not found: %s", key)
 	}
-	
+
 	s.objects[key] = obj.DeepCopyObject()
 	return nil
 }
@@ -187,16 +187,16 @@ func (s *Store) Patch(ctx context.Context, obj client.Object, patch client.Patch
 func (s *Store) DeleteAllOf(ctx context.Context, obj client.Object, opts ...client.DeleteAllOfOption) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	
+
 	gvk := obj.GetObjectKind().GroupVersionKind()
 	prefix := fmt.Sprintf("%s/%s/", gvk.Group, gvk.Kind)
-	
+
 	for key := range s.objects {
 		if key[:len(prefix)] == prefix {
 			delete(s.objects, key)
 		}
 	}
-	
+
 	return nil
 }
 
@@ -214,7 +214,7 @@ func (s *Store) GroupVersionKindFor(obj runtime.Object) (schema.GroupVersionKind
 	return gvk, nil
 }
 
-// IsObjectNamespaced implements client.WithWatch interface  
+// IsObjectNamespaced implements client.WithWatch interface
 func (s *Store) IsObjectNamespaced(obj runtime.Object) (bool, error) {
 	// Simple heuristic: if object has a namespace, it's namespaced
 	accessor, err := meta.Accessor(obj)
