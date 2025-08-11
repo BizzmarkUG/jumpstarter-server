@@ -2,11 +2,48 @@
 
 Jumpstarter is a device management and control system that provides remote access to hardware devices for testing, development, and automation purposes.
 
+This repository serves as a **standalone-focused monorepo** that integrates:
+- **Standalone server** (Go-based, no Kubernetes dependencies)
+- **Client tools** (Python-based CLI and libraries)
+- **Unified development experience** for both server and client components
+
+## Quick Start
+
+### 🐳 Standalone Server + Client Tools
+
+1. **Clone and start the server**:
+   ```bash
+   git clone https://github.com/BizzmarkUG/jumpstarter-server.git
+   cd jumpstarter-server
+   docker-compose up -d
+   ```
+
+2. **Install and use client tools**:
+   ```bash
+   cd client/packages/jumpstarter-cli
+   pip install -e .
+   jmp login --server localhost:8080
+   jmp --help
+   ```
+
+## Repository Structure
+
+- **🏗️ Server Components** (Go-based)
+  - `cmd/standalone/` - Standalone server implementation
+  - `internal/standalone/` - Standalone mode components  
+  - `config/` - Configuration files and samples
+  - `deploy/` - Docker and deployment configurations
+
+- **🐍 Client Components** (Python-based)
+  - `client/` - Integrated client tools from jumpstarter repository
+  - `client/packages/jumpstarter-cli/` - Command-line interface
+  - `client/packages/jumpstarter/` - Core Python library
+
 ## Deployment Options
 
 Jumpstarter supports two deployment modes:
 
-### 🐳 Standalone Mode (Recommended for Small Deployments)
+### 🐳 Standalone Mode (Recommended)
 
 Run Jumpstarter as a simple Docker container without Kubernetes:
 
