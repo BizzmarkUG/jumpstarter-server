@@ -1,12 +1,62 @@
-# jumpstarter-router
-// TODO(user): Add simple overview of use/purpose
+# Jumpstarter Server
+
+Jumpstarter is a device management and control system that provides remote access to hardware devices for testing, development, and automation purposes.
+
+## Deployment Options
+
+Jumpstarter supports two deployment modes:
+
+### 🐳 Standalone Mode (Recommended for Small Deployments)
+
+Run Jumpstarter as a simple Docker container without Kubernetes:
+
+```bash
+# Quick start with Docker Compose
+git clone https://github.com/BizzmarkUG/jumpstarter-server.git
+cd jumpstarter-server
+docker-compose up -d
+```
+
+**Perfect for:**
+- Development and testing environments
+- Small deployments with a few devices
+- Organizations without Kubernetes expertise
+- Edge computing scenarios
+
+📖 **[Full Standalone Documentation](docs/STANDALONE.md)**
+
+### ☸️ Kubernetes Mode (For Large Deployments)
+
+Deploy on Kubernetes clusters with CRDs and advanced features:
 
 ## Description
-// TODO(user): An in-depth paragraph about your project and overview of use
+
+Jumpstarter provides a controller and router system for managing hardware devices remotely. The system supports both standalone Docker deployments and full Kubernetes deployments with CRDs.
 
 ## Getting Started
 
-### Prerequisites
+### Standalone Mode (No Kubernetes Required)
+
+**Prerequisites:**
+- Docker and Docker Compose
+
+**Quick Start:**
+```bash
+# Clone the repository
+git clone https://github.com/BizzmarkUG/jumpstarter-server.git
+cd jumpstarter-server
+
+# Start with Docker Compose
+docker-compose up -d
+
+# Access the services
+# Controller API: http://localhost:8080
+# Router Service: http://localhost:8090
+```
+
+### Kubernetes Mode
+
+**Prerequisites:**
 - go version v1.22.0+
 - kubectl version v1.11.3+.
 - Access to a Kubernetes v1.11.3+ cluster.
@@ -45,6 +95,34 @@ kubectl apply -k config/samples/
 ```
 
 >**NOTE**: Ensure that the samples has default values to test it out.
+
+## Deployment Mode Comparison
+
+| Feature | Standalone Mode | Kubernetes Mode |
+|---------|----------------|-----------------|
+| **Setup Complexity** | Simple (Docker only) | Complex (K8s cluster required) |
+| **Resource Requirements** | Low | Medium to High |
+| **Persistence** | In-memory (non-persistent) | Persistent (etcd) |
+| **High Availability** | Single instance | Multi-instance with failover |
+| **CRDs Required** | No | Yes |
+| **RBAC Integration** | Simplified | Full Kubernetes RBAC |
+| **Ideal For** | Dev, testing, small deployments | Production, large deployments |
+| **Device Limit** | Few devices | Many devices |
+| **Configuration** | YAML file | ConfigMaps |
+
+## Building from Source
+
+### Build Standalone Mode
+```bash
+make build-standalone
+# Binary available at: bin/standalone
+```
+
+### Build Kubernetes Mode
+```bash
+make build
+# Binaries available at: bin/manager, bin/router
+```
 
 ### To Uninstall
 **Delete the instances (CRs) from the cluster:**
