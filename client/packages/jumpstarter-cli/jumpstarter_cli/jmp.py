@@ -21,8 +21,30 @@ def version():
 @click.option("--server", default="localhost:8080", help="Jumpstarter server address")
 def login(server):
     """Login to a Jumpstarter server."""
-    click.echo(f"Logging in to {server}...")
-    click.echo("Note: This is a basic implementation. Full client integration coming soon.")
+    click.echo(f"Connecting to jumpstarter server at {server}...")
+    
+    # Basic connectivity test
+    import socket
+    try:
+        host, port_str = server.split(":")
+        port = int(port_str)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(5)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        
+        if result == 0:
+            click.echo(f"✓ Successfully connected to {server}")
+            click.echo("Note: Authentication and full gRPC integration coming soon.")
+        else:
+            click.echo(f"✗ Could not connect to {server}")
+            click.echo("Make sure the jumpstarter standalone server is running:")
+            click.echo("  docker-compose up -d")
+            click.echo("  # or")
+            click.echo("  go run cmd/standalone/main.go --config /tmp/jumpstarter/config.yaml")
+    except Exception as e:
+        click.echo(f"✗ Connection failed: {e}")
+        click.echo("Please check the server address and ensure the server is running.")
 
 
 @jmp.command()
