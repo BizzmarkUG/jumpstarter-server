@@ -1,0 +1,33 @@
+# Build the standalone binary
+FROM registry.access.redhat.com/ubi9/go-toolset:1.22.9 AS builder
+ARG TARGETOS
+ARG TARGETARCH
+
+# Copy the Go Modules manifests
+COPY go.mod go.mod
+COPY go.sum go.sum
+# cache deps before building and copying source so that we don't need to re-download as much
+# and so that source changes don't invalidate our downloaded layer
+RUN go mod download
+
+# Copy the go source
+COPY cmd/ cmd/
+COPY api/ api/
+COPY internal/ internal/
+
+# Build standalone mode
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o standalone cmd/standalone/main.go
+
+FROM registry.access.redhat.com/ubi9/ubi-micro:9.5
+WORKDIR /
+
+# Create config directory
+RUN mkdir -p /etc/jumpstarter
+
+COPY --from=builder /opt/app-root/src/standalone .
+USER 65532:65532
+
+# Expose ports for controller and router services
+EXPOSE 8080 8090
+
+ENTRYPOINT ["/standalone"]

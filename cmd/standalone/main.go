@@ -51,7 +51,7 @@ func main() {
 	logger := ctrl.Log.WithName("standalone")
 	ctx := logr.NewContext(context.Background(), logger)
 
-	logger.Info("Starting jumpstarter in standalone mode", 
+	logger.Info("Starting jumpstarter in standalone mode",
 		"config", configFile,
 		"controller-addr", controllerAddr,
 		"router-addr", routerAddr)

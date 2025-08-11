@@ -37,18 +37,18 @@ type SimpleAuthenticator struct {
 func (a *SimpleAuthenticator) AuthenticateToken(ctx context.Context, token string) (*authenticator.Response, bool, error) {
 	// In standalone mode, we accept any token and create a user based on the prefix
 	// In a production environment, you would validate the token properly
-	
+
 	if token == "" {
 		return nil, false, nil
 	}
-	
+
 	// Create a user info object
 	userInfo := &user.DefaultInfo{
 		Name:   fmt.Sprintf("%s:user", a.prefix),
 		UID:    fmt.Sprintf("%s:uid", a.prefix),
 		Groups: []string{fmt.Sprintf("%s:users", a.prefix)},
 	}
-	
+
 	return &authenticator.Response{
 		User: userInfo,
 	}, true, nil
@@ -62,7 +62,7 @@ func (a *SimpleAuthenticator) AuthenticateContext(ctx context.Context) (*authent
 		UID:    fmt.Sprintf("%s:uid", a.prefix),
 		Groups: []string{fmt.Sprintf("%s:users", a.prefix)},
 	}
-	
+
 	return &authenticator.Response{
 		User: userInfo,
 	}, true, nil
@@ -101,16 +101,16 @@ type simpleAttributes struct {
 	user user.Info
 }
 
-func (a *simpleAttributes) GetUser() user.Info                { return a.user }
-func (a *simpleAttributes) GetVerb() string                   { return "get" }
-func (a *simpleAttributes) IsReadOnly() bool                  { return false }
-func (a *simpleAttributes) GetNamespace() string              { return "" }
-func (a *simpleAttributes) GetResource() string               { return "" }
-func (a *simpleAttributes) GetSubresource() string            { return "" }
-func (a *simpleAttributes) GetName() string                   { return "" }
-func (a *simpleAttributes) GetAPIGroup() string               { return "" }
-func (a *simpleAttributes) GetAPIVersion() string             { return "" }
-func (a *simpleAttributes) IsResourceRequest() bool           { return true }
-func (a *simpleAttributes) GetPath() string                   { return "" }
+func (a *simpleAttributes) GetUser() user.Info                             { return a.user }
+func (a *simpleAttributes) GetVerb() string                                { return "get" }
+func (a *simpleAttributes) IsReadOnly() bool                               { return false }
+func (a *simpleAttributes) GetNamespace() string                           { return "" }
+func (a *simpleAttributes) GetResource() string                            { return "" }
+func (a *simpleAttributes) GetSubresource() string                         { return "" }
+func (a *simpleAttributes) GetName() string                                { return "" }
+func (a *simpleAttributes) GetAPIGroup() string                            { return "" }
+func (a *simpleAttributes) GetAPIVersion() string                          { return "" }
+func (a *simpleAttributes) IsResourceRequest() bool                        { return true }
+func (a *simpleAttributes) GetPath() string                                { return "" }
 func (a *simpleAttributes) GetFieldSelector() (fields.Requirements, error) { return nil, nil }
 func (a *simpleAttributes) GetLabelSelector() (labels.Requirements, error) { return nil, nil }

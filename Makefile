@@ -89,6 +89,10 @@ build: manifests generate fmt vet ## Build manager binary.
 	go build -o bin/manager cmd/main.go
 	go build -o bin/router  cmd/router/main.go
 
+.PHONY: build-standalone
+build-standalone: fmt vet ## Build standalone binary.
+	go build -o bin/standalone cmd/standalone/main.go
+
 .PHONY: run
 run: manifests generate fmt vet ## Run a controller from your host.
 	go run ./cmd/main.go
@@ -97,6 +101,10 @@ run: manifests generate fmt vet ## Run a controller from your host.
 run-router: manifests generate fmt vet ## Run a router from your host.
 	go run ./cmd/router/main.go
 
+.PHONY: run-standalone
+run-standalone: fmt vet ## Run standalone mode from your host.
+	go run ./cmd/standalone/main.go --config=./config/config.yaml
+
 # If you wish to build the manager image targeting other platforms you can use the --platform flag.
 # (i.e. docker build --platform linux/arm64). However, you must enable docker buildKit for it.
 # More info: https://docs.docker.com/develop/develop-images/build_enhancements/
@@ -104,9 +112,17 @@ run-router: manifests generate fmt vet ## Run a router from your host.
 docker-build: ## Build docker image with the manager.
 	$(CONTAINER_TOOL) build -t ${IMG} .
 
+.PHONY: docker-build-standalone
+docker-build-standalone: ## Build standalone docker image.
+	$(CONTAINER_TOOL) build -f Dockerfile.standalone -t ${IMG}-standalone .
+
 .PHONY: docker-push
 docker-push: ## Push docker image with the manager.
 	$(CONTAINER_TOOL) push ${IMG}
+
+.PHONY: docker-push-standalone
+docker-push-standalone: ## Push standalone docker image.
+	$(CONTAINER_TOOL) push ${IMG}-standalone
 
 # PLATFORMS defines the target platforms for the manager image be built to provide support to multiple
 # architectures. (i.e. make docker-buildx IMG=myregistry/mypoperator:0.0.1). To use this option you need to:
