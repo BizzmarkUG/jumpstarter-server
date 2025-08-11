@@ -20,8 +20,6 @@ import (
 	"context"
 	"time"
 
-	jumpstarterdevv1alpha1 "github.com/jumpstarter-dev/jumpstarter-controller/api/v1alpha1"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	corev1 "k8s.io/api/core/v1"
@@ -29,6 +27,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
+
+	jumpstarterdevv1alpha1 "github.com/jumpstarter-dev/jumpstarter-controller/api/v1alpha1"
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 )
 
 var leaseDutA2Sec = &jumpstarterdevv1alpha1.Lease{

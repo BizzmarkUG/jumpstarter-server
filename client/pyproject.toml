@@ -8,7 +8,7 @@ jumpstarter-cli = { workspace = true }
 [dependency-groups]
 dev = [
     "ruff==0.9.2",
-    "typos>=1.23.6", 
+    "typos>=1.23.6",
     "pre-commit>=3.8.0",
 ]
 
@@ -39,7 +39,6 @@ mosquitto = "mosquitto"
 
 [tool.coverage.run]
 omit = ["conftest.py", "test_*.py", "*_test.py", "*_pb2.py", "*_pb2_grpc.py"]
-skip_empty = true
 
 [tool.pytest.ini_options]
 addopts = "--capture=no --doctest-modules --cov --cov-report=html --cov-report=xml"

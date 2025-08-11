@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	jumpstarterdevv1alpha1 "github.com/jumpstarter-dev/jumpstarter-controller/api/v1alpha1"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authentication"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authorization"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apiserver/pkg/authorization/authorizer"

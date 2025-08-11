@@ -8,14 +8,14 @@ This repository contains the Jumpstarter Server, a fork of jumpstarter-controlle
 
 The primary goal is to transform this repository into a monorepo that:
 - **Focuses on standalone mode operation** as the main deployment method
-- **Integrates jumpstarter client tools** from the jumpstarter repository  
+- **Integrates jumpstarter client tools** from the jumpstarter repository
 - **Eliminates Kubernetes dependencies** for simpler deployment and maintenance
 - **Provides a unified development experience** for both server and client components
 
 ## Step-by-Step Approach
 
 1. ✅ Add copilot-instructions to this repo
-2. Restore and enhance standalone mode functionality  
+2. Restore and enhance standalone mode functionality
 3. Integrate client tools from jumpstarter repository
 4. Describe what the final monorepo will look like
 5. Specify tests to execute

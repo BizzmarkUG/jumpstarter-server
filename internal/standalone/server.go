@@ -26,14 +26,15 @@ import (
 	"time"
 
 	"github.com/go-logr/logr"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
+	"gopkg.in/yaml.v3"
+
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authentication"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authorization"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/config"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/service"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/keepalive"
-	"gopkg.in/yaml.v3"
 )
 
 // Config holds configuration for standalone mode

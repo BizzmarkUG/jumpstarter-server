@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	corev1 "k8s.io/api/core/v1"
@@ -13,6 +12,8 @@ import (
 	"k8s.io/apimachinery/pkg/util/yaml"
 	"k8s.io/apiserver/pkg/authentication/authenticator"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 )
 
 func LoadRouterConfiguration(

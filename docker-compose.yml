@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   jumpstarter:
@@ -7,10 +7,10 @@ services:
       dockerfile: Dockerfile.standalone
     container_name: jumpstarter-standalone
     ports:
-      - "8080:8080"  # Controller service
-      - "8090:8090"  # Router service
-      - "8085:8085"  # OIDC service (if enabled)
-      - "8086:8086"  # Dashboard service (if enabled)
+      - "8080:8080" # Controller service
+      - "8090:8090" # Router service
+      - "8085:8085" # OIDC service (if enabled)
+      - "8086:8086" # Dashboard service (if enabled)
     volumes:
       - ./config:/etc/jumpstarter:ro
       - jumpstarter-data:/var/lib/jumpstarter
@@ -18,7 +18,18 @@ services:
       - CONTROLLER_KEY=standalone-mode-key-change-in-production
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/healthz", "||", "exit", "1"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8080/healthz",
+          "||",
+          "exit",
+          "1",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3

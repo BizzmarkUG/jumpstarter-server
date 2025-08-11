@@ -5,9 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	cpb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/client/v1"
-	pb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/service/utils"
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	corev1 "k8s.io/api/core/v1"
@@ -18,6 +15,10 @@ import (
 	"k8s.io/utils/ptr"
 	kclient "sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+
+	cpb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/client/v1"
+	pb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/service/utils"
 )
 
 func LeaseFromProtobuf(

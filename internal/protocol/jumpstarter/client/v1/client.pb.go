@@ -14,16 +14,18 @@
 package clientv1
 
 import (
-	v1 "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
+	reflect "reflect"
+	sync "sync"
+	unsafe "unsafe"
+
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	reflect "reflect"
-	sync "sync"
-	unsafe "unsafe"
+
+	v1 "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
 )
 
 const (

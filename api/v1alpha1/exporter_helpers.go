@@ -3,10 +3,11 @@ package v1alpha1
 import (
 	"strings"
 
-	cpb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/client/v1"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/service/utils"
 	"k8s.io/apimachinery/pkg/api/meta"
 	kclient "sigs.k8s.io/controller-runtime/pkg/client"
+
+	cpb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/client/v1"
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/service/utils"
 )
 
 func (e *Exporter) InternalSubject() string {

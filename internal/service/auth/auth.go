@@ -3,14 +3,15 @@ package auth
 import (
 	"context"
 
-	jumpstarterdevv1alpha1 "github.com/jumpstarter-dev/jumpstarter-controller/api/v1alpha1"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authentication"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authorization"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"k8s.io/apiserver/pkg/authorization/authorizer"
 	kclient "sigs.k8s.io/controller-runtime/pkg/client"
+
+	jumpstarterdevv1alpha1 "github.com/jumpstarter-dev/jumpstarter-controller/api/v1alpha1"
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authentication"
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authorization"
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 )
 
 type Auth struct {

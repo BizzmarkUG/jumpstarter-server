@@ -14,17 +14,23 @@ The client tools include:
 
 ## Installation
 
+**Prerequisites:**
+
+- Python 3.11+
+- [uv](https://docs.astral.sh/uv/) package manager
+
 From the repository root:
 
 ```bash
 cd client
-pip install -e .
+uv sync --all-groups
 ```
 
-For development with all drivers:
+For development environment only:
 
 ```bash
-pip install -e ".[all]"
+cd client
+uv sync --group dev
 ```
 
 ## Usage
@@ -33,9 +39,14 @@ After installation, you can use the CLI tools:
 
 ```bash
 # Main CLI interface
-jmp --help
+uv run jmp --help
 
 # Short alias
+uv run j --help
+
+# Or activate the virtual environment
+uv shell
+jmp --help
 j --help
 ```
 

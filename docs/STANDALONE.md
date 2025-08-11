@@ -7,17 +7,20 @@ This directory contains configuration and deployment files for running Jumpstart
 ### Using Docker Compose (Recommended)
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/BizzmarkUG/jumpstarter-server.git
    cd jumpstarter-server
    ```
 
 2. **Start the services**:
+
    ```bash
    docker-compose up -d
    ```
 
 3. **Check the logs**:
+
    ```bash
    docker-compose logs -f jumpstarter
    ```
@@ -30,6 +33,7 @@ This directory contains configuration and deployment files for running Jumpstart
 ### Using Docker directly
 
 1. **Build the standalone image**:
+
    ```bash
    docker build -f Dockerfile.standalone -t jumpstarter:standalone .
    ```
@@ -48,6 +52,7 @@ This directory contains configuration and deployment files for running Jumpstart
 ### Manual build and run
 
 1. **Build the standalone binary**:
+
    ```bash
    go build -o bin/standalone cmd/standalone/main.go
    ```
@@ -67,6 +72,7 @@ This directory contains configuration and deployment files for running Jumpstart
 The standalone mode uses a YAML configuration file (default: `/etc/jumpstarter/config.yaml`).
 
 Example configuration:
+
 ```yaml
 authentication:
   internal:
@@ -97,6 +103,7 @@ grpc:
 ## Differences from Kubernetes Mode
 
 ### What's Included
+
 - Combined controller and router services in a single process
 - File-based configuration instead of ConfigMaps
 - In-memory storage for device/exporter state
@@ -104,6 +111,7 @@ grpc:
 - Self-contained deployment without external dependencies
 
 ### What's Not Included
+
 - Kubernetes CRDs (Custom Resource Definitions)
 - Kubernetes RBAC integration
 - Persistent storage (state is lost on restart)
@@ -111,6 +119,7 @@ grpc:
 - High availability / clustering
 
 ### Limitations
+
 - No persistence - all state is lost when the container restarts
 - Single instance only (no clustering)
 - Simplified authentication model
@@ -119,6 +128,7 @@ grpc:
 ## Use Cases
 
 This standalone mode is ideal for:
+
 - **Development and testing environments**
 - **Small deployments** with just a few devices
 - **Edge computing** scenarios
@@ -128,6 +138,7 @@ This standalone mode is ideal for:
 ## Security Considerations
 
 For production use, ensure you:
+
 1. Set a strong `CONTROLLER_KEY` environment variable
 2. Use HTTPS/TLS for external access
 3. Restrict network access to the service ports

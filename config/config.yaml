@@ -10,7 +10,7 @@ router:
   default:
     endpoint: "localhost:8090"
     labels: {}
-  
+
   # Example of additional router endpoints
   # production:
   #   endpoint: "prod-router:8090"

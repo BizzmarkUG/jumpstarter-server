@@ -24,8 +24,6 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/recovery"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authentication"
-	pb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -33,6 +31,9 @@ import (
 	"google.golang.org/grpc/status"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authentication"
+	pb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
 )
 
 // RouterService exposes a gRPC service

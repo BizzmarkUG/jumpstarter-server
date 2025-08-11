@@ -23,6 +23,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
 	jumpstarterdevv1alpha1 "github.com/jumpstarter-dev/jumpstarter-controller/api/v1alpha1"
 
 	"k8s.io/apimachinery/pkg/runtime"

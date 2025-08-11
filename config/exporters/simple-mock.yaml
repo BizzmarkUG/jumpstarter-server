@@ -1,0 +1,22 @@
+apiVersion: jumpstarter.dev/v1alpha1
+kind: ExporterConfig
+metadata:
+  namespace: default
+  name: simple-mock
+endpoint: localhost:8080
+grpcConfig:
+  grpc.keepalive_time_ms: 20000
+export:
+  # Simple mock power control
+  power:
+    type: jumpstarter_driver_mock.driver.MockPower
+    config:
+      name: "Simple Mock Power"
+      initial_state: "off"
+
+  # Simple mock serial interface
+  console:
+    type: jumpstarter_driver_mock.driver.MockSerial
+    config:
+      name: "Simple Mock Console"
+      baudrate: 115200

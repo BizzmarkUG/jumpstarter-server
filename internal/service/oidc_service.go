@@ -6,8 +6,9 @@ import (
 	"net"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 	ctrl "sigs.k8s.io/controller-runtime"
+
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 )
 
 // RouterService exposes a gRPC service

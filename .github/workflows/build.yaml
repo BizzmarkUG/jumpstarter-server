@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - '*'
+      - "*"
     branches:
       - main
-      - 'release-*'
+      - "release-*"
 
 env:
   REGISTRY: quay.io
@@ -97,8 +97,7 @@ jobs:
         env:
           PASSWORD: ${{ secrets.QUAY_TOKEN }}
           USER: jumpstarter-dev+jumpstarter_ci
-        run:
-          helm registry login quay.io -u ${USER} -p ${PASSWORD}
+        run: helm registry login quay.io -u ${USER} -p ${PASSWORD}
 
       - name: Push helm charts
         run: |

@@ -4,7 +4,6 @@ import (
 	"context"
 	"os"
 
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apiserver/pkg/apis/apiserver"
 	apiserverv1beta1 "k8s.io/apiserver/pkg/apis/apiserver/v1beta1"
@@ -12,6 +11,8 @@ import (
 	tokenunion "k8s.io/apiserver/pkg/authentication/token/union"
 	"k8s.io/apiserver/pkg/server/dynamiccertificates"
 	koidc "k8s.io/apiserver/plugin/pkg/authenticator/token/oidc"
+
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
 )
 
 func LoadAuthenticationConfiguration(

@@ -14,6 +14,7 @@ def jmp(log_level):
 def version():
     """Show version information."""
     from . import __version__
+
     click.echo(f"jumpstarter-cli version {__version__}")
 
 
@@ -22,9 +23,10 @@ def version():
 def login(server):
     """Login to a Jumpstarter server."""
     click.echo(f"Connecting to jumpstarter server at {server}...")
-    
+
     # Basic connectivity test
     import socket
+
     try:
         host, port_str = server.split(":")
         port = int(port_str)
@@ -32,7 +34,7 @@ def login(server):
         sock.settimeout(5)
         result = sock.connect_ex((host, port))
         sock.close()
-        
+
         if result == 0:
             click.echo(f"✓ Successfully connected to {server}")
             click.echo("Note: Authentication and full gRPC integration coming soon.")

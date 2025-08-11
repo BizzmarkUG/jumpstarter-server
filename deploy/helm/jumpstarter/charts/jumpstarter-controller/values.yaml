@@ -23,7 +23,7 @@ grpc:
   # enabling openshift route
   route:
     enabled: false
-  
+
   # NodePort service for grpc, useful for local development
   nodeport:
     enabled: false

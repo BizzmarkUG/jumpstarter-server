@@ -12,6 +12,7 @@ This directory contains the integrated Jumpstarter client tools that work with t
 ### Basic Installation
 
 1. **Install the CLI tools**:
+
    ```bash
    cd client/packages/jumpstarter-cli
    pip install -e .
@@ -26,6 +27,7 @@ This directory contains the integrated Jumpstarter client tools that work with t
 ### Connecting to the Standalone Server
 
 1. **Start the standalone server**:
+
    ```bash
    # From the repository root
    docker-compose up -d
@@ -41,18 +43,21 @@ This directory contains the integrated Jumpstarter client tools that work with t
 ## Development Status
 
 ### ✅ Completed
+
 - Basic CLI structure (`jmp`, `j` commands)
 - Package structure for monorepo integration
 - Basic client library skeleton
 - Documentation framework
 
 ### 🚧 In Progress
+
 - Full CLI command implementation
 - gRPC client integration with standalone server
 - Protocol buffer definitions
 - Advanced device management
 
 ### 📋 Planned
+
 - All driver packages integration
 - Complete testing framework
 - Examples and tutorials
