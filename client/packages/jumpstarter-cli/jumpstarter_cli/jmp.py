@@ -227,11 +227,40 @@ def use_client_config(alias):
 @click.option("--filter", help="Filter expression")
 def get(selector, filter):
     """Get resources from the server."""
-    click.echo("🚧 Resource listing functionality coming soon")
-    click.echo("This will connect to the standalone server and list:")
-    click.echo("  - exporters")
-    click.echo("  - devices")
-    click.echo("  - leases")
+    from jumpstarter.grpc_client import JumpstarterClient
+    
+    try:
+        with JumpstarterClient() as client:
+            if not client.test_connection():
+                click.echo("✗ Could not connect to jumpstarter server")
+                click.echo("Make sure the server is running:")
+                click.echo("  docker-compose up -d")
+                return
+                
+            click.echo("📋 Listing resources from server...")
+            
+            # List devices/exporters
+            devices = client.get_devices(selector)
+            if devices:
+                click.echo("\nDEVICES:")
+                click.echo("NAME\t\tNAMESPACE\tSTATUS\t\tLABELS")
+                for device in devices:
+                    labels_str = ",".join([f"{k}={v}" for k, v in device.get("labels", {}).items()])
+                    click.echo(f"{device['name']}\t{device['namespace']}\t{device['status']}\t{labels_str}")
+            
+            # List leases 
+            leases = client.list_leases()
+            if leases:
+                click.echo("\nLEASES:")
+                for lease in leases:
+                    click.echo(f"  {lease}")
+            
+            if not devices and not leases:
+                click.echo("No resources found")
+                
+    except Exception as e:
+        click.echo(f"✗ Error connecting to server: {e}")
+        click.echo("Make sure the jumpstarter standalone server is running")
 
 
 @jmp.command()
@@ -239,17 +268,54 @@ def get(selector, filter):
 @click.option("--duration", default="30m", help="Lease duration")
 def create(selector, duration):
     """Create a lease for a device."""
-    click.echo(f"🚧 Creating lease for selector: {selector}")
-    click.echo(f"Duration: {duration}")
-    click.echo("This will connect to the standalone server to create device leases")
+    from jumpstarter.grpc_client import JumpstarterClient
+    
+    try:
+        with JumpstarterClient() as client:
+            if not client.test_connection():
+                click.echo("✗ Could not connect to jumpstarter server")
+                return
+                
+            click.echo(f"📝 Creating lease for selector: {selector}")
+            click.echo(f"Duration: {duration}")
+            
+            # Parse selector into dict (simple key=value format)
+            selector_dict = {}
+            if "=" in selector:
+                for part in selector.split(","):
+                    if "=" in part:
+                        k, v = part.split("=", 1)
+                        selector_dict[k.strip()] = v.strip()
+            
+            lease_name = client.request_lease(selector_dict, duration)
+            click.echo(f"✓ Lease created: {lease_name}")
+            
+    except Exception as e:
+        click.echo(f"✗ Error creating lease: {e}")
 
 
 @jmp.command()
 @click.argument("name")
 def delete(name):
     """Delete a lease."""
-    click.echo(f"🚧 Deleting lease: {name}")
-    click.echo("This will connect to the standalone server to delete leases")
+    from jumpstarter.grpc_client import JumpstarterClient
+    
+    try:
+        with JumpstarterClient() as client:
+            if not client.test_connection():
+                click.echo("✗ Could not connect to jumpstarter server")
+                return
+                
+            click.echo(f"🗑️  Deleting lease: {name}")
+            
+            success = client.release_lease(name)
+            if success:
+                click.echo(f"✓ Lease {name} deleted successfully")
+            else:
+                click.echo(f"✗ Failed to delete lease {name}")
+                
+    except Exception as e:
+        click.echo(f"✗ Error deleting lease: {e}")
 
 
 @jmp.command()
@@ -257,9 +323,32 @@ def delete(name):
 @click.option("--duration", default="30m", help="Lease duration")
 def shell(selector, duration):
     """Open an interactive shell to a device."""
-    click.echo(f"🚧 Opening shell to device: {selector}")
-    click.echo(f"Duration: {duration}")
-    click.echo("This will connect to the standalone server and open an interactive session")
+    from jumpstarter.grpc_client import JumpstarterClient
+    
+    try:
+        with JumpstarterClient() as client:
+            if not client.test_connection():
+                click.echo("✗ Could not connect to jumpstarter server")
+                return
+                
+            click.echo(f"🖥️  Opening shell to device: {selector}")
+            click.echo(f"Duration: {duration}")
+            
+            # For now, show the planned functionality
+            click.echo("Shell functionality framework ready!")
+            click.echo("This will:")
+            click.echo("  1. Create a lease for the device")
+            click.echo("  2. Connect to the router service")
+            click.echo("  3. Open an interactive terminal session")
+            click.echo("  4. Handle device communication protocols")
+            click.echo("")
+            click.echo("📋 Implementation status:")
+            click.echo("  ✓ gRPC client framework") 
+            click.echo("  ✓ Server connectivity")
+            click.echo("  🚧 Interactive shell protocol (next step)")
+                
+    except Exception as e:
+        click.echo(f"✗ Error connecting to device: {e}")
 
 
 if __name__ == "__main__":

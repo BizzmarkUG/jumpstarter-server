@@ -28,13 +28,18 @@ import (
 	"github.com/go-logr/logr"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
+	"google.golang.org/grpc/reflection"
 	"gopkg.in/yaml.v3"
 
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authentication"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/authorization"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/config"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/oidc"
+	cpb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/client/v1"
+	pb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/service"
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/service/auth"
+	clientsvcv1 "github.com/jumpstarter-dev/jumpstarter-controller/internal/service/client/v1"
 )
 
 // Config holds configuration for standalone mode
@@ -330,8 +335,17 @@ func (s *Server) startControllerService() error {
 
 	s.controllerServer = grpc.NewServer(s.controllerSvc.ServerOption)
 
-	// TODO: Register the actual controller service here
-	// For now, we'll implement the basic structure
+	// Register the controller service
+	pb.RegisterControllerServiceServer(s.controllerServer, s.controllerSvc)
+	
+	// Register client service
+	cpb.RegisterClientServiceServer(s.controllerServer, clientsvcv1.NewClientService(
+		s.controllerSvc.Client,
+		*auth.NewAuth(s.controllerSvc.Client, s.controllerSvc.Authn, s.controllerSvc.Authz, s.controllerSvc.Attr),
+	))
+
+	// Register reflection service for CLI tools
+	reflection.Register(s.controllerServer)
 
 	s.logger.Info("Controller service listening", "addr", s.config.ControllerAddr)
 	return s.controllerServer.Serve(lis)
@@ -346,7 +360,11 @@ func (s *Server) startRouterService() error {
 
 	s.routerServer = grpc.NewServer(s.routerSvc.ServerOption)
 
-	// TODO: Register the actual router service here
+	// Register the router service
+	pb.RegisterRouterServiceServer(s.routerServer, s.routerSvc)
+
+	// Register reflection service for CLI tools
+	reflection.Register(s.routerServer)
 
 	s.logger.Info("Router service listening", "addr", s.config.RouterAddr)
 	return s.routerServer.Serve(lis)

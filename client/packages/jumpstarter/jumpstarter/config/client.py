@@ -98,7 +98,7 @@ class ClientConfigV1Alpha1(BaseModel):
         if cls.CLIENT_CONFIGS_PATH.exists() is False:
             # Return an empty list if the dir does not exist
             return ClientConfigListV1Alpha1(
-                current_config=None,
+                currentConfig=None,  # Use the alias field name
                 items=[],
             )
 
@@ -111,12 +111,18 @@ class ClientConfigV1Alpha1(BaseModel):
             return cls.from_file(path)
 
         current_config = None
-        if UserConfigV1Alpha1.exists():
-            current_client = UserConfigV1Alpha1.load().config.current_client
-            current_config = current_client if current_client is not None else None
+        try:
+            if UserConfigV1Alpha1.exists():
+                user_config = UserConfigV1Alpha1.load()
+                current_client = user_config.config.current_client
+                current_config = current_client if current_client is not None else None
+        except Exception as e:
+            # If there's an issue loading user config, continue without current selection
+            print(f"Warning: Could not load user config: {e}")
+            current_config = None
 
         return ClientConfigListV1Alpha1(
-            current_config=current_config,
+            currentConfig=current_config,  # Use the alias field name
             items=list(map(make_config, files)),
         )
 
