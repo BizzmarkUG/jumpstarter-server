@@ -29,7 +29,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	"github.com/jumpstarter-dev/jumpstarter-controller/internal/standalone"
-)
 
 func main() {
 	var configFile string

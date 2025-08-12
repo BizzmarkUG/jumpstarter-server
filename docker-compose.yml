@@ -11,7 +11,6 @@ services:
       - "8090:8090" # Router service
       - "8085:8085" # OIDC service (if enabled)
       - "8086:8086" # Dashboard service (if enabled)
-    volumes:
       - ./config:/etc/jumpstarter:ro
       - jumpstarter-data:/var/lib/jumpstarter
     environment:
@@ -30,7 +29,6 @@ services:
           "exit",
           "1",
         ]
-      interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s

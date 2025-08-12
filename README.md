@@ -92,7 +92,6 @@ Jumpstarter provides a controller and router system for managing hardware device
 
 **Quick Start:**
 
-```bash
 # Clone the repository
 git clone https://github.com/BizzmarkUG/jumpstarter-server.git
 cd jumpstarter-server
@@ -180,6 +179,34 @@ make build-standalone
 
 ### Build Kubernetes Mode
 
+```bash
+make build
+# Binaries available at: bin/manager, bin/router
+```
+
+## Deployment Mode Comparison
+
+| Feature | Standalone Mode | Kubernetes Mode |
+|---------|----------------|-----------------|
+| **Setup Complexity** | Simple (Docker only) | Complex (K8s cluster required) |
+| **Resource Requirements** | Low | Medium to High |
+| **Persistence** | In-memory (non-persistent) | Persistent (etcd) |
+| **High Availability** | Single instance | Multi-instance with failover |
+| **CRDs Required** | No | Yes |
+| **RBAC Integration** | Simplified | Full Kubernetes RBAC |
+| **Ideal For** | Dev, testing, small deployments | Production, large deployments |
+| **Device Limit** | Few devices | Many devices |
+| **Configuration** | YAML file | ConfigMaps |
+
+## Building from Source
+
+### Build Standalone Mode
+```bash
+make build-standalone
+# Binary available at: bin/standalone
+```
+
+### Build Kubernetes Mode
 ```bash
 make build
 # Binaries available at: bin/manager, bin/router
