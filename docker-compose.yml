@@ -11,6 +11,7 @@ services:
       - "8090:8090" # Router service
       - "8085:8085" # OIDC service (if enabled)
       - "8086:8086" # Dashboard service (if enabled)
+    volumes:
       - ./config:/etc/jumpstarter:ro
       - jumpstarter-data:/var/lib/jumpstarter
     environment:
