@@ -9,7 +9,7 @@ rules:
 - apiGroups:
   - jumpstarter.dev
   resources:
-  - clients 
+  - clients
   verbs:
   - get
   - list

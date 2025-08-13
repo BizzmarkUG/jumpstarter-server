@@ -1,0 +1,150 @@
+# Pre-commit configuration for Jumpstarter Server
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+
+repos:
+  # Standard pre-commit hooks for general file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^client/packages/jumpstarter-protocol/
+      - id: end-of-file-fixer
+        exclude: ^client/packages/jumpstarter-protocol/
+      - id: check-yaml
+        exclude: ^(dist/install\.yaml|client/packages/jumpstarter-protocol/|deploy/helm/)
+      - id: check-toml
+      - id: check-json
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: debug-statements
+        exclude: ^client/packages/jumpstarter-protocol/
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+
+  # Typos checker for spelling mistakes
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.26.8
+    hooks:
+      - id: typos
+        exclude: ^client/packages/jumpstarter-protocol/
+
+  # Go linting and formatting
+  - repo: https://github.com/dnephin/pre-commit-golang
+    rev: v0.5.1
+    hooks:
+      - id: go-fmt
+        exclude: ^client/
+      - id: go-imports
+        exclude: ^client/
+        args: ["-local", "github.com/jumpstarter-dev/jumpstarter-controller"]
+      - id: go-mod-tidy
+        exclude: ^client/
+      # go-vet moved to local hooks section for better control
+
+  # Go linting with golangci-lint (uses existing .golangci.yml)
+  - repo: https://github.com/golangci/golangci-lint
+    rev: v1.62.2
+    hooks:
+      - id: golangci-lint
+        exclude: ^client/
+
+  # Python code formatting and linting with ruff
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.12.8
+    hooks:
+      - id: ruff
+        args: [--fix]
+        files: ^(client/|config/exporters/.*\.py$)
+      - id: ruff-format
+        files: ^(client/|config/exporters/.*\.py$)
+
+  # Shell script linting
+  - repo: https://github.com/shellcheck-py/shellcheck-py
+    rev: v0.11.0.1
+    hooks:
+      - id: shellcheck
+        args: [--severity=warning]
+        exclude: ^client/packages/jumpstarter-protocol/
+
+  # Dockerfile linting
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.13.1-beta
+    hooks:
+      - id: hadolint-docker
+        args: [--ignore, DL3008, --ignore, DL3009]
+
+  # YAML formatting and linting
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v4.0.0-alpha.8
+    hooks:
+      - id: prettier
+        types_or: [yaml, markdown]
+        exclude: ^(client/packages/jumpstarter-protocol/|deploy/helm/|\.github/copilot-instructions\.md$)
+        additional_dependencies:
+          - prettier@3.0.0
+
+  # Security scanning for Python dependencies
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.6
+    hooks:
+      - id: bandit
+        args: [--skip, B101, B601]
+        files: ^(client/|config/exporters/.*\.py$)
+
+  # Local hooks for project-specific checks
+  - repo: local
+    hooks:
+      # Go vet check for Go code analysis
+      - id: go-vet-local
+        name: Go Vet
+        entry: go vet ./...
+        language: system
+        files: \.go$
+        pass_filenames: false
+
+      # Check that Go tests pass
+      # - id: go-test
+      #   name: Go Tests
+      #   entry: env PATH=/usr/local/go/bin:$(go env GOPATH)/bin:$PATH go test ./...
+      #   language: system
+      #   files: \.go$
+      #   require_serial: true
+
+      # Check Python tests in client directory (disabled - no tests yet)
+      # - id: python-test-client
+      #   name: Python Tests (Client)
+      #   entry: bash -c 'cd client && uv run pytest --tb=short'
+      #   language: system
+      #   files: ^client/.*\.py$
+      #   pass_filenames: false
+
+      # Validate Docker Compose configuration
+      - id: docker-compose-check
+        name: Docker Compose Check
+        entry: docker compose config
+        language: system
+        files: ^docker-compose\.ya?ml$
+        pass_filenames: false
+
+      # Check that mock exporter can be imported
+      - id: mock-exporter-syntax
+        name: Mock Exporter Syntax Check
+        entry: python3 -m py_compile
+        language: system
+        files: ^config/exporters/.*\.py$
+
+# Configuration
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ""
+  autoupdate_commit_msg: "[pre-commit.ci] pre-commit autoupdate"
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false

@@ -17,4 +17,3 @@ EOF
         sudo systemctl daemon-reload
     fi
 fi
-

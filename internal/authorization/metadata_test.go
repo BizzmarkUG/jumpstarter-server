@@ -18,7 +18,7 @@ func TestNormalizeName(t *testing.T) {
 		},
 		{
 			input:  "foo@example.com",
-			output: "oidc-foo-example-com-321ba1",
+			output: "oidc-foo-example-com-321be1",
 		},
 		{
 			input:  "foo@@@@@example.com",

@@ -25,9 +25,10 @@ import (
 	"syscall"
 
 	"github.com/go-logr/logr"
-	"github.com/jumpstarter-dev/jumpstarter-controller/internal/standalone"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
+
+	"github.com/jumpstarter-dev/jumpstarter-controller/internal/standalone"
 )
 
 func main() {

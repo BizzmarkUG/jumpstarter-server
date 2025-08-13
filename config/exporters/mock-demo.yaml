@@ -1,0 +1,48 @@
+apiVersion: jumpstarter.dev/v1alpha1
+kind: ExporterConfig
+metadata:
+  namespace: default
+  name: mock-demo
+endpoint: localhost:8080
+# No token needed for local development
+grpcConfig:
+  grpc.keepalive_time_ms: 20000
+  grpc.keepalive_timeout_ms: 5000
+  grpc.keepalive_permit_without_calls: true
+export:
+  # Mock power control (simulates a relay/power switch)
+  power:
+    type: jumpstarter_driver_mock.driver.MockPower
+    config:
+      name: "Mock Power Switch"
+      initial_state: "off"
+      delay_ms: 100
+
+  # Mock serial interface (simulates UART/console access)
+  serial:
+    type: jumpstarter_driver_mock.driver.MockSerial
+    config:
+      name: "Mock Serial Console"
+      baudrate: 115200
+      echo_responses: true
+      startup_banner: "Mock Device Console v1.0\nType 'help' for commands\n"
+
+  # Mock storage interface (simulates SD card or USB storage)
+  storage:
+    type: jumpstarter_driver_mock.driver.MockStorage
+    config:
+      name: "Mock Storage Device"
+      size_mb: 1024
+      read_only: false
+
+  # Mock GPIO interface
+  gpio:
+    type: jumpstarter_driver_mock.driver.MockGPIO
+    config:
+      name: "Mock GPIO Controller"
+      pin_count: 8
+      initial_values: [0, 0, 0, 0, 0, 0, 0, 0]
+
+  # Reference example (power control aliased as reset)
+  reset:
+    ref: "power"

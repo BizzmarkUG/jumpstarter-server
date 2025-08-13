@@ -2,11 +2,58 @@
 
 Jumpstarter is a device management and control system that provides remote access to hardware devices for testing, development, and automation purposes.
 
+This repository serves as a **standalone-focused monorepo** that integrates:
+
+- **Standalone server** (Go-based, no Kubernetes dependencies)
+- **Client tools** (Python-based CLI and libraries)
+- **Unified development experience** for both server and client components
+
+## Quick Start
+
+### 🐳 Standalone Server + Client Tools
+
+1. **Clone and start the server**:
+
+   ```bash
+   git clone https://github.com/BizzmarkUG/jumpstarter-server.git
+   cd jumpstarter-server
+   docker-compose up -d
+   ```
+
+2. **Install and use client tools**:
+
+   ```bash
+   cd client
+   uv sync --all-groups
+   uv run jmp login --server localhost:8080
+   uv run jmp --help
+   ```
+
+3. **Start a mock exporter (optional for testing)**:
+   ```bash
+   # Start mock hardware devices
+   ./config/exporters/start-mock-exporter.sh
+   ```
+
+## Repository Structure
+
+- **🏗️ Server Components** (Go-based)
+
+  - `cmd/standalone/` - Standalone server implementation
+  - `internal/standalone/` - Standalone mode components
+  - `config/` - Configuration files and samples
+  - `deploy/` - Docker and deployment configurations
+
+- **🐍 Client Components** (Python-based)
+  - `client/` - Integrated client tools from jumpstarter repository
+  - `client/packages/jumpstarter-cli/` - Command-line interface
+  - `client/packages/jumpstarter/` - Core Python library
+
 ## Deployment Options
 
 Jumpstarter supports two deployment modes:
 
-### 🐳 Standalone Mode (Recommended for Small Deployments)
+### 🐳 Standalone Mode (Recommended)
 
 Run Jumpstarter as a simple Docker container without Kubernetes:
 
@@ -18,6 +65,7 @@ docker-compose up -d
 ```
 
 **Perfect for:**
+
 - Development and testing environments
 - Small deployments with a few devices
 - Organizations without Kubernetes expertise
@@ -38,16 +86,24 @@ Jumpstarter provides a controller and router system for managing hardware device
 ### Standalone Mode (No Kubernetes Required)
 
 **Prerequisites:**
+
 - Docker and Docker Compose
+- Python 3.11+ and [uv](https://docs.astral.sh/uv/) (for client tools)
 
 **Quick Start:**
-```bash
+
 # Clone the repository
 git clone https://github.com/BizzmarkUG/jumpstarter-server.git
 cd jumpstarter-server
 
 # Start with Docker Compose
 docker-compose up -d
+
+# Install and use client tools
+cd client
+uv sync --all-groups
+uv run jmp login --server localhost:8080
+uv run jmp --help
 
 # Access the services
 # Controller API: http://localhost:8080
@@ -57,11 +113,13 @@ docker-compose up -d
 ### Kubernetes Mode
 
 **Prerequisites:**
+
 - go version v1.22.0+
 - kubectl version v1.11.3+.
 - Access to a Kubernetes v1.11.3+ cluster.
 
 ### To Deploy on the cluster
+
 **Build and push your image to the location specified by `IMG`:**
 
 ```sh
@@ -85,7 +143,7 @@ make deploy IMG=<some-registry>/jumpstarter-router:tag
 ```
 
 > **NOTE**: If you encounter RBAC errors, you may need to grant yourself cluster-admin
-privileges or be logged in as admin.
+> privileges or be logged in as admin.
 
 **Create instances of your solution**
 You can apply the samples (examples) from the config/sample:
@@ -94,7 +152,37 @@ You can apply the samples (examples) from the config/sample:
 kubectl apply -k config/samples/
 ```
 
->**NOTE**: Ensure that the samples has default values to test it out.
+> **NOTE**: Ensure that the samples has default values to test it out.
+
+## Deployment Mode Comparison
+
+| Feature                   | Standalone Mode                 | Kubernetes Mode                |
+| ------------------------- | ------------------------------- | ------------------------------ |
+| **Setup Complexity**      | Simple (Docker only)            | Complex (K8s cluster required) |
+| **Resource Requirements** | Low                             | Medium to High                 |
+| **Persistence**           | In-memory (non-persistent)      | Persistent (etcd)              |
+| **High Availability**     | Single instance                 | Multi-instance with failover   |
+| **CRDs Required**         | No                              | Yes                            |
+| **RBAC Integration**      | Simplified                      | Full Kubernetes RBAC           |
+| **Ideal For**             | Dev, testing, small deployments | Production, large deployments  |
+| **Device Limit**          | Few devices                     | Many devices                   |
+| **Configuration**         | YAML file                       | ConfigMaps                     |
+
+## Building from Source
+
+### Build Standalone Mode
+
+```bash
+make build-standalone
+# Binary available at: bin/standalone
+```
+
+### Build Kubernetes Mode
+
+```bash
+make build
+# Binaries available at: bin/manager, bin/router
+```
 
 ## Deployment Mode Comparison
 
@@ -125,6 +213,7 @@ make build
 ```
 
 ### To Uninstall
+
 **Delete the instances (CRs) from the cluster:**
 
 ```sh
@@ -167,6 +256,7 @@ kubectl apply -f https://raw.githubusercontent.com/<org>/jumpstarter-router/<tag
 ```
 
 ## Contributing
+
 // TODO(user): Add detailed information on how you would like others to contribute to this project
 
 **NOTE:** Run `make help` for more information on all potential `make` targets
@@ -188,4 +278,3 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-

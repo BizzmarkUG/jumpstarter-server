@@ -99,7 +99,7 @@ echo -e "${GREEN}Performing helm ${METHOD} ...${NC}"
 helm ${METHOD} --namespace jumpstarter-lab \
                --create-namespace \
                ${HELM_SETS} \
-               --set global.timestamp=$(date +%s) \
+               --set global.timestamp="$(date +%s)" \
                --values ./deploy/helm/jumpstarter/values.kind.yaml jumpstarter \
             ./deploy/helm/jumpstarter/
 

@@ -5,8 +5,9 @@ import (
 	"errors"
 	"io"
 
-	pb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
 	"golang.org/x/sync/errgroup"
+
+	pb "github.com/jumpstarter-dev/jumpstarter-controller/internal/protocol/jumpstarter/v1"
 )
 
 func pipe(a pb.RouterService_StreamServer, b pb.RouterService_StreamServer) error {

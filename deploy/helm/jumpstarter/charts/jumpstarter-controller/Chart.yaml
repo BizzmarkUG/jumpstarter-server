@@ -4,4 +4,3 @@ description: A helm chart for jumpstarter-controller
 type: application
 version: 0.0.1
 appVersion: 0.0.1
-

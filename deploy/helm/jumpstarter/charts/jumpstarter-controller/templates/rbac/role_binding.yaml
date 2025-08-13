@@ -4,7 +4,7 @@ metadata:
   labels:
     app.kubernetes.io/name: jumpstarter-router
   name: jumpstarter-manager-rolebinding
-  
+
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
